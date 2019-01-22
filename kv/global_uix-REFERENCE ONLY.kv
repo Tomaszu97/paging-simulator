@@ -1,0 +1,235 @@
+#:kivy 1.10.1
+#:import hex kivy.utils.get_color_from_hex
+#:set labelcolor hex('#151626')
+#:set labelcolor2 hex('#303252')
+#:set bgcolor hex('#101119')
+#:set bgcolor2 hex('#202238')
+#:set bgcolor3 hex('#151833')
+#:set buttoncolor hex('#444466')
+#:set default_font 'res/Ubuntu-M.ttf'
+#:set default_text_color hex('#BBBBBB')
+
+
+<Button>:
+	halign: 'center'
+	valign: 'center'
+	text_size: (self.width, None)
+	background_color: buttoncolor
+	font_name: default_font
+	color: default_text_color
+
+<Label>:
+	halign: 'center'
+	valign: 'center'
+	text_size: (self.width, None)
+	font_name: default_font
+	color: default_text_color
+
+<LabelWithHint@Button>:
+	hint_text: 'hint'
+	background_color: labelcolor
+	on_press: self.display_hint()
+
+<TextInput>:
+	valign: 'center'
+	cursor_color: hex('#1548FF')
+	font_size: self.height*0.6
+	background_color: bgcolor2
+	foreground_color: hex('#FFFFFF')
+	font_name: default_font
+
+<Spinner>:	
+	value_index: self.values.index(self.text) if self.text in self.values else 'None' 
+
+<ColoredLabel@Label>:
+	canvas.before:
+		Color:
+			rgba: labelcolor
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+<ColoredLabel2@Label>:
+	canvas.before:
+		Color:
+			rgba: labelcolor2
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+
+<PrecisionSlider@BoxLayout>:
+	min: 0
+	max: 100
+	default: 0
+	value: slider.value
+	step: 1.0
+	#
+	orientation: 'horizontal'
+	spacing: 5
+	Slider:
+		id: slider
+		step: self.parent.step
+		min: self.parent.min
+		max: self.parent.max
+		size_hint_x: 0.7
+		value: self.parent.default
+	BoxLayout:
+		orientation: 'vertical'
+		size_hint_x: 0.07
+		Button:
+			text: '\u25b2'
+			font_name: 'Arial'
+			on_press: self.parent.parent.increase_value()
+		Button:
+			text: '\u25bc'
+			font_name: 'Arial'
+			on_press: self.parent.parent.decrease_value()
+	Label:
+		text: str(round(self.parent.ids.slider.value, 1))
+		size_hint_x: 0.22
+
+<Indicator@BoxLayout>:
+	text: 'indicator'
+	active: False
+	#
+	orientation: 'horizontal'
+	ColoredLabel:
+		id: label
+		text: self.parent.text
+	CheckBox:
+		id: checkbox
+		disabled: True
+		active: self.parent.active
+		background_checkbox_disabled_down: 'res/indicator_down.png'
+		background_checkbox_disabled_normal: 'res/indicator_ok.png'
+		center_x: self.parent.center_x -  (self.parent.width / 2)
+		center_y: self.parent.center_y -  (self.parent.height / 2)
+		width: self.parent.width * 0.5
+		height: self.parent.height * 0.5
+
+<AnalogValue@BoxLayout>:
+	text: 'AnalogValue Slider'
+	hint_text: 'hint'
+	unit: '\u00b0C'
+	min: 0
+	max: 100
+	disable_slider: False
+	step: 1
+	value: round(slider.value, 1)
+	default: 67.0
+	reg_value: self.value*10 if self.step == 0.1 else self.value
+	#
+	spacing: 10
+	orientation: 'horizontal'
+	LabelWithHint:
+		text: self.parent.text
+		hint_text: self.parent.hint_text
+		size_hint_x: 0.3
+	PrecisionSlider:
+		id: slider
+		default: self.parent.default
+		min: self.parent.min
+		max: self.parent.max
+		size_hint_x: 0.6
+		disabled: self.parent.disable_slider
+		step: self.parent.step
+	Label:
+		text: self.parent.unit
+		size_hint_x: 0.1
+
+<DigitalValue@BoxLayout>:
+	text: 'DigitalValue Spinner'
+	hint_text: 'hint'
+	default: 'pierwsza'
+	values: ['pierwsza','druga','trzecia']
+	disable_spinner: False
+	value: spinner.text
+	reg_value: self.value_index
+	#
+	spacing: 10
+	orientation: 'horizontal'
+	value_index: spinner.value_index
+	LabelWithHint:
+		text: self.parent.text
+		hint_text: self.parent.hint_text
+		size_hint_x: 0.3
+	Spinner:
+		id: spinner
+		background_color: labelcolor2
+		text: self.parent.default
+		values: self.parent.values
+		value: self.parent.value
+		size_hint_x: 0.7
+		disabled: self.parent.disable_spinner
+
+<MyTextInput@BoxLayout>:
+	text: 'my text input'
+	hint_text: 'type here'
+	value: ti.text
+	password: False
+	#
+	spacing: 10
+	orientation: 'horizontal'
+	Label:
+		size_hint_x: 0.2
+		text: self.parent.text
+	TextInput:
+		id: ti
+		text: ''
+		size_hint_x: 0.8
+		multiline: False
+		tab_width: 0
+		hint_text: self.parent.hint_text
+		password: self.parent.password
+		password_mask: '\u2022'
+	Label:
+		size_hint_x: 0.05
+
+<Page@BoxLayout>:
+	orientation: 'horizontal'
+	spacing: 10
+	padding: 10
+	canvas:
+		Color:
+			rgb: bgcolor2
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+<Column@BoxLayout>:
+	orientation: 'vertical'
+	spacing: 10
+
+<Section@BoxLayout>:
+	title: 'Section'
+	orientation: 'vertical'
+	spacing: 10
+	padding: 10
+	canvas:
+		Color:
+			rgb: bgcolor
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+	ColoredLabel2:
+		text: self.parent.title
+		bold: True
+		valign: 'top'	
+
+<FilledBoxLayout@BoxLayout>:
+	canvas:
+		Color:
+			rgb: bgcolor3
+		Rectangle:
+			pos: self.pos
+			size: self.size
+
+<DarkFilledBoxLayout@BoxLayout>:
+	canvas:
+		Color:
+			rgb: bgcolor2
+		Rectangle:
+			pos: self.pos
+			size: self.size
